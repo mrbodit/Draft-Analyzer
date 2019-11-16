@@ -10,6 +10,7 @@ patch_time = 1573106400000
 server = choose_server()
 fileName_matches = DATA_FOLDER + '\\matches_' + server
 fileName_accounts = DATA_FOLDER + '\\accounts_' + server
+meta_file_name = DATA_FOLDER + '\\meta_data'
 list_of_saved_accounts = [line.rstrip('\n') for line in io.open(fileName_accounts, encoding='utf-8')]
 
 accounts_line = int(str(input('podaj linię z której mam zacząć wczytywać konta: ')))
@@ -58,3 +59,6 @@ for account in list_of_saved_accounts:
     print('Na tym koncie było zagranych ' + str(len(list_of_matches)) + ' meczy od ostatniego patcha')
     print('Powtórzyło się ' + str(number_of_duplicates) + ' meczy')
 
+with io.open(meta_file_name, 'a', encoding='utf-8') as mf:
+    mf.write('Przerobiono ' + str(accounts_line + len(list_of_saved_accounts)) + ' linii ' + str(server) + '\n')
+print('PAMIĘTAJ ŻEBY ZAJRZEĆ DO META DANYCH I POPRAWIĆ!!!1111oneoneon')

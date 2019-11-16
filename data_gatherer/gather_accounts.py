@@ -8,7 +8,8 @@ import io
 tier = choose_tier()
 division = choose_division()
 server = choose_server()
-fileName = DATA_FOLDER + '\\accounts_' + server
+file_name = DATA_FOLDER + '\\accounts_' + server
+meta_file_name = DATA_FOLDER + '\\meta_data'
 page = input('Wybierz stronę: ')
 
 status = 0
@@ -32,8 +33,8 @@ for i in range(len(data)):
     list_of_summoners.append(data[i]['summonerName'])
 print('Ilość pobranych summonerów wynosi: ' + str(len(list_of_summoners)))
 
-list_of_saved_accounts = [line.rstrip('\n') for line in io.open(fileName, encoding='utf-8')]
-with io.open(fileName, 'a', encoding='utf-8') as f:
+list_of_saved_accounts = [line.rstrip('\n') for line in io.open(file_name, encoding='utf-8')]
+with io.open(file_name, 'a', encoding='utf-8') as f:
     for summoner_name in list_of_summoners:
 
         status = 0
@@ -77,3 +78,7 @@ with io.open(fileName, 'a', encoding='utf-8') as f:
         else:
             print('zapisano: ' + str(summoner_name) + ' ' + str(account_name))
             f.write('%s\n' % str(account_name))
+
+with io.open(meta_file_name, 'a', encoding='utf-8') as mf:
+    mf.write(str(tier) + ' ' + str(division) + ' ' + str(server) + ' ' + str(page) + '\n')
+print('PAMIĘTAJ ŻEBY ZAJRZEĆ DO META DANYCH I POPRAWIĆ!!!1111oneoneon')
