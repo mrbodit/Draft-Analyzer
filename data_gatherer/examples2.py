@@ -11,7 +11,7 @@ for matchID in list_of_matches:
     request_URL = 'https://eun1.api.riotgames.com/lol/match/v4/matches/' + matchID + '?api_key=RGAPI-9e092e69-2126-4af8-a2cb-6da7182854c4'
     response = requests.get(request_URL)
     if response.status_code == 200:
-        print(str(counter) + "super, przeszło")
+        print(str(counter) + 'super, przeszło')
     else:
         print(response.status_code)
         break
