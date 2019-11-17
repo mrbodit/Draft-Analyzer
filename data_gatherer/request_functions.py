@@ -10,25 +10,28 @@ def save_meta_match_data(number_of_lines, server):
     print('PAMIĘTAJ ŻEBY ZAJRZEĆ DO META DANYCH I POPRAWIĆ!!!1111oneoneon')
 
 
-def choose_tier():
-    print('wybierz tier: ')
-    print('1. CHALLENGER')
-    print('2. GRANDMASTER')
-    print('3. MASTER')
-    print('4. DIAMOND')
-    print('5. PLATINUM')
-    print('6. GOLD')
-    print('7. SILVER')
-    print('8. BRONZE')
-    print('9. IRON')
-    good_answer = False
-    possible_options = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
-    while not good_answer:
-        choosen_option = input('podaj numer: ')
-        if choosen_option not in possible_options:
-            print('podałeś złą opcję podaj jeszcze raz')
-        else:
-            good_answer = True
+def choose_tier(answer=None):
+    if answer is None:
+        print('wybierz tier: ')
+        print('1. CHALLENGER')
+        print('2. GRANDMASTER')
+        print('3. MASTER')
+        print('4. DIAMOND')
+        print('5. PLATINUM')
+        print('6. GOLD')
+        print('7. SILVER')
+        print('8. BRONZE')
+        print('9. IRON')
+        good_answer = False
+        possible_options = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+        while not good_answer:
+            choosen_option = input('podaj numer: ')
+            if choosen_option not in possible_options:
+                print('podałeś złą opcję podaj jeszcze raz')
+            else:
+                good_answer = True
+    else:
+        choosen_option = answer
     if int(str(choosen_option)) == 1:
         return 'CHALLENGER'
     elif int(str(choosen_option)) == 2:
@@ -75,6 +78,7 @@ def choose_division():
         return 'IV'
     else:
         print('coś źle poszło')
+
 
 def choose_server():
     print('wybierz serwer: ')
