@@ -1,3 +1,14 @@
+import io
+
+from config import DATA_FOLDER
+
+
+def save_meta_match_data(number_of_lines, server):
+    meta_file_name = DATA_FOLDER + '\\meta_data'
+    with io.open(meta_file_name, 'a', encoding='utf-8') as mf:
+        mf.write('Przerobiono ' + str(number_of_lines) + ' linii ' + str(server) + '\n')
+    print('PAMIĘTAJ ŻEBY ZAJRZEĆ DO META DANYCH I POPRAWIĆ!!!1111oneoneon')
+
 
 def choose_tier():
     print('wybierz tier: ')

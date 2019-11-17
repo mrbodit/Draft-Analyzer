@@ -4,13 +4,12 @@ import time
 import requests
 
 from config import DATA_FOLDER, API_KEY
-from data_gatherer.request_functions import choose_server
+from data_gatherer.request_functions import choose_server, save_meta_match_data
 
 patch_time = 1573106400000
 server = choose_server()
 fileName_matches = DATA_FOLDER + '\\matches_' + server
 fileName_accounts = DATA_FOLDER + '\\accounts_' + server
-meta_file_name = DATA_FOLDER + '\\meta_data'
 list_of_saved_accounts = [line.rstrip('\n') for line in io.open(fileName_accounts, encoding='utf-8')]
 
 accounts_line = int(str(input('podaj linię z której mam zacząć wczytywać konta: ')))
@@ -29,11 +28,15 @@ for account in list_of_saved_accounts:
         if response.status_code == 429:
             print('Za dużo pobrań na raz, poczekaj dwie minutki')
             time.sleep(120)
+        elif response.status_code == 503:
+            print('Serwis się zwiesił poczekaj chwilkę')
+            time.sleep(15)
         elif response.status_code == 200:
             status = 200
         else:
             print(response.status_code)
             print(response.headers)
+            save_meta_match_data(accounts_line + list_of_saved_accounts.index(account), server)
             exit()
 
     data = response.json()
@@ -59,6 +62,4 @@ for account in list_of_saved_accounts:
     print('Na tym koncie było zagranych ' + str(len(list_of_matches)) + ' meczy od ostatniego patcha')
     print('Powtórzyło się ' + str(number_of_duplicates) + ' meczy')
 
-with io.open(meta_file_name, 'a', encoding='utf-8') as mf:
-    mf.write('Przerobiono ' + str(accounts_line + len(list_of_saved_accounts)) + ' linii ' + str(server) + '\n')
-print('PAMIĘTAJ ŻEBY ZAJRZEĆ DO META DANYCH I POPRAWIĆ!!!1111oneoneon')
+save_meta_match_data(accounts_line + len(list_of_saved_accounts), server)

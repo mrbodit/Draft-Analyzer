@@ -19,8 +19,8 @@ while status != 200:
     if response.status_code == 200:
         status = 200
     elif response.status_code == 429:
-        print('Za dużo pobrań na raz, poczekaj minutę')
-        time.sleep(65)
+        print('Za dużo pobrań na raz, poczekaj dwie minutki')
+        time.sleep(120)
     else:
         print(response.status_code)
         print(response.headers)
@@ -44,6 +44,9 @@ with io.open(file_name, 'a', encoding='utf-8') as f:
             if response.status_code == 429:
                 print('Za dużo pobrań na raz, poczekaj dwie minutki')
                 time.sleep(120)
+            elif response.status_code == 503:
+                print('Serwis się zwiesił poczekaj chwilkę')
+                time.sleep(15)
             elif response.status_code == 200:
                 status = 200
             else:
@@ -79,6 +82,7 @@ with io.open(file_name, 'a', encoding='utf-8') as f:
             print('zapisano: ' + str(summoner_name) + ' ' + str(account_name))
             f.write('%s\n' % str(account_name))
 
+
 with io.open(meta_file_name, 'a', encoding='utf-8') as mf:
-    mf.write(str(tier) + ' ' + str(division) + ' ' + str(server) + ' ' + str(page) + '\n')
+    mf.write(str(tier) + ' ' + str(division) + ' ' + str(server) + ' ' + str(page) + ' ' + str(len(list_of_summoners)) + '\n')
 print('PAMIĘTAJ ŻEBY ZAJRZEĆ DO META DANYCH I POPRAWIĆ!!!1111oneoneon')
