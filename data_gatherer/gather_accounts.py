@@ -46,7 +46,8 @@ def gather_accounts(tier=None, division=None, server=None, page=None):
         for summoner_name in list_of_summoners:
 
             status = 0
-            while status != 200:
+
+            while status != 200 and status != 403:
                 request_url = 'https://' + server + '.api.riotgames.com/lol/summoner/v4/summoners/by-name/' + summoner_name + '?api_key=' + API_KEY
                 response = requests.get(request_url)
                 if response.status_code == 429:
@@ -57,11 +58,15 @@ def gather_accounts(tier=None, division=None, server=None, page=None):
                     time.sleep(15)
                 elif response.status_code == 200:
                     status = 200
+                elif response.status_code == 404:
+                    print('Serwis się nie znalazł, lecimy z kolejnym kontem')
+                    status = 403
                 else:
                     print(response.status_code)
                     print(response.headers)
                     exit()
-
+            if status == 403:
+                continue
             data = response.json()
             account_name = data['accountId']
 
