@@ -22,7 +22,7 @@ for account in list_of_saved_accounts:
     list_of_saved_matches = [line.rstrip('\n') for line in io.open(fileName_matches, encoding='utf-8')]
     print(len(list_of_saved_matches))
     status = 0
-    while status != 200:
+    while status != 200 and status != 404:
         request_URL = 'https://' + server +'.api.riotgames.com/lol/match/v4/matchlists/by-account/' + account + '?queue=420&api_key=' + API_KEY
         response = requests.get(request_URL)
         if response.status_code == 429:
@@ -31,6 +31,9 @@ for account in list_of_saved_accounts:
         elif response.status_code == 503:
             print('Serwis się zwiesił poczekaj chwilkę')
             time.sleep(15)
+        elif response.status_code == 404:
+            print('Serwis się nie znalazł')
+            status = 404
         elif response.status_code == 200:
             status = 200
         else:
@@ -38,7 +41,8 @@ for account in list_of_saved_accounts:
             print(response.headers)
             save_meta_match_data(accounts_line + list_of_saved_accounts.index(account), server)
             exit()
-
+    if status == 404:
+        continue
     data = response.json()
     list_of_matches = []
     for i in range(len(data['matches'])):
