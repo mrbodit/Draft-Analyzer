@@ -6,7 +6,7 @@ import time
 from data_gatherer.request_functions import parse_matches
 
 meta_file_name = DATA_FOLDER + '\\meta_data'
-servers = ['EUN1', 'EUW1', 'TR1', 'NA1']
+servers = ['EUN1', 'EUW1', 'KR', 'NA1', 'RU', 'TR1']
 lines = []
 for server in range(len(servers)):
     lines.append(input('Podaj linię od której zacząć parsować mecze na ' + servers[server] + ': '))

@@ -1,2 +1,2 @@
-API_KEY = 'RGAPI-264f8d08-bce0-40b3-948d-90a2fbfc7b4c'
+API_KEY = 'RGAPI-4bd92012-160f-4bbf-8bd7-ba35db500a3c'
 DATA_FOLDER = 'D:\projekty\draft analyzer\Draft-Analyzer\data_gatherer\data'
