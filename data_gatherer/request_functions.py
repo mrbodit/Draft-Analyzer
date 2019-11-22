@@ -1,6 +1,9 @@
 import io
+import csv
+import time
 
-from config import DATA_FOLDER
+from config import DATA_FOLDER, API_KEY
+import requests
 
 
 def save_meta_match_data(number_of_lines, server):
@@ -125,3 +128,76 @@ def choose_server():
         return 'LA2'
     else:
         print('coś źle poszło')
+
+
+def parse_matches(actual_server, line):
+    file_name = DATA_FOLDER + '\\matches_' + actual_server
+    list_of_matches = [line.rstrip('\n') for line in io.open(file_name, encoding='utf-8')]
+    counter = int(line)
+    for i in range(int(line), len(list_of_matches)):
+        if counter % 10 == 0:
+            print('Przerobione ' + str(counter) + ' meczy serwera ' + actual_server)
+        if counter - int(line) > 100:
+            return [0, counter]
+        request_url = 'https://' + actual_server + '.api.riotgames.com/lol/match/v4/matches/' + list_of_matches[
+            i] + '?api_key=' + API_KEY
+        status = 0
+        while status != 200 and status != 404:
+            response = requests.get(request_url)
+            if response.status_code == 200:
+                status = 200
+            elif response.status_code == 429:
+                print('Wyszło łącznie: ' + str(counter) + ' przerobionych meczy na ' + actual_server)
+                print('Za dużo pobrań na raz, zmiana serwera')
+                return [429, counter]
+            elif response.status_code == 503:
+                print('Serwis się zwiesił poczekaj chwilkę')
+                time.sleep(15)
+            elif response.status_code == 404:
+                print('Serwis się nie znalazł')
+                status = 404
+            else:
+                return response.status_code
+        if status == 404:
+            counter += 1
+            continue
+
+        data = response.json()
+        season_id = int(data['seasonId'])
+        queue_id = int(data['queueId'])
+        game_id = int(data['gameId'])
+        game_version = data['gameVersion']
+        platform = data['platformId']
+        if data['teams'][0]['win'] == 'Win':
+            win = 'team_1'
+        else:
+            win = 'team_2'
+        team_1 = [[data['participantIdentities'][0]['player']['accountId'], int(data['participants'][0]['championId'])],
+                  [data['participantIdentities'][1]['player']['accountId'], int(data['participants'][1]['championId'])],
+                  [data['participantIdentities'][2]['player']['accountId'], int(data['participants'][2]['championId'])],
+                  [data['participantIdentities'][3]['player']['accountId'], int(data['participants'][3]['championId'])],
+                  [data['participantIdentities'][4]['player']['accountId'], int(data['participants'][4]['championId'])]]
+
+        team_2 = [[data['participantIdentities'][5]['player']['accountId'], int(data['participants'][5]['championId'])],
+                  [data['participantIdentities'][6]['player']['accountId'], int(data['participants'][6]['championId'])],
+                  [data['participantIdentities'][7]['player']['accountId'], int(data['participants'][7]['championId'])],
+                  [data['participantIdentities'][8]['player']['accountId'], int(data['participants'][8]['championId'])],
+                  [data['participantIdentities'][9]['player']['accountId'], int(data['participants'][9]['championId'])]]
+
+        filename = DATA_FOLDER + '\\parsed_matches.csv'
+        with open(filename, mode='a+', newline='') as employee_file:
+            employee_writer = csv.writer(employee_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            employee_writer.writerow([str(season_id), str(queue_id), str(game_id), game_version, platform, win,
+                                      team_1[0][0], team_1[0][1],
+                                      team_1[1][0], team_1[1][1],
+                                      team_1[2][0], team_1[2][1],
+                                      team_1[3][0], team_1[3][1],
+                                      team_1[4][0], team_1[4][1],
+                                      team_2[0][0], team_2[0][1],
+                                      team_2[1][0], team_2[1][1],
+                                      team_2[2][0], team_2[2][1],
+                                      team_2[3][0], team_2[3][1],
+                                      team_2[4][0], team_2[4][1]])
+        counter += 1
+    print("przerobiliśmy serwer: " + actual_server)
+    return True
