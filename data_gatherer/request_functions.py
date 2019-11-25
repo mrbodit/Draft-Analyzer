@@ -138,7 +138,7 @@ def parse_matches(actual_server, line):
         if counter % 10 == 0:
             print('Przerobione ' + str(counter) + ' meczy serwera ' + actual_server)
         if counter - int(line) > 100:
-            return [0, counter]
+            return [100, counter]
         request_url = 'https://' + actual_server + '.api.riotgames.com/lol/match/v4/matches/' + list_of_matches[
             i] + '?api_key=' + API_KEY
         status = 0
@@ -152,12 +152,16 @@ def parse_matches(actual_server, line):
                 return [429, counter]
             elif response.status_code == 503:
                 print('Serwis się zwiesił poczekaj chwilkę')
-                time.sleep(15)
+                time.sleep(5)
             elif response.status_code == 404:
                 print('Serwis się nie znalazł')
                 status = 404
+            elif response.status_code == 500:
+                print('Błąd serwisu')
+                status = 500
             else:
-                return response.status_code
+                print('Wyszło łącznie: ' + str(counter) + ' przerobionych meczy na ' + actual_server)
+                return [response.status_code, counter]
         if status == 404:
             counter += 1
             continue
@@ -172,6 +176,8 @@ def parse_matches(actual_server, line):
             win = 'team_1'
         else:
             win = 'team_2'
+        if season_id != 13 or queue_id != 420:
+            continue
         team_1 = [[data['participantIdentities'][0]['player']['accountId'], int(data['participants'][0]['championId'])],
                   [data['participantIdentities'][1]['player']['accountId'], int(data['participants'][1]['championId'])],
                   [data['participantIdentities'][2]['player']['accountId'], int(data['participants'][2]['championId'])],
